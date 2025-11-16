@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dagboek van een Soldaat — Kunstlogboek (Oorlog)</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Libre+Franklin:wght@300;400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+  <style>
+  /* ================ Variables ================ */
+  :root{
+    --paper-bg: #efeadf;
+    --accent: #7b2b2b;
+    --muted: #6b6b6b;
+    --ink: #1a1a1a;
+    --tape: rgba(210,180,140,0.95);
+    --shadow: rgba(10,10,10,0.35);
+    --maxwidth: 1200px;
+    --photo-col: 340px; /* widened for laptop */
+    --card-radius: 12px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: "Libre Franklin", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, #e6e1d6 0%, #d9d3c2 100%);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+    padding-bottom:40px;
+  }
+
+  .wrap{
+    max-width:var(--maxwidth);
+    margin:28px auto;
+    padding:28px;
+    position:relative;
+  }
+
+  .wrap::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.02) 100%);
+    background-size: 22px 22px, 100% 300px;
+    mix-blend-mode:overlay;
+    z-index:0;
+    border-radius:8px;
+  }
+
+  header{
+    position:relative;
+    z-index:2;
+    display:flex;
+    gap:20px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+
+  .logo{ display:flex; gap:12px; align-items:center; }
+  .book{
+    width:68px;height:68px;border-radius:10px;
+    background:linear-gradient(135deg,#efe8da,#ddd1bf);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12), inset 0 -4px 6px rgba(255,255,255,0.35);
+    display:grid;place-items:center;font-family:"Gloock", serif;font-size:20px;color:var(--accent);
+    transform:rotate(-6deg); border:1px solid rgba(0,0,0,0.06);
+  }
+  .title h1{margin:0;font-size:20px;font-weight:700}
+  .title p{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+  nav{
+    margin-left:auto; display:flex; gap:10px; align-items:center;
+  }
+  .nav-btn{
+    background:transparent;border:1px solid rgba(0,0,0,0.06);
+    padding:8px 12px;border-radius:8px;font-weight:600;
+    cursor:pointer;color:var(--accent);
+    transition:transform .18s ease, box-shadow .18s;
+  }
+  .nav-btn:hover{transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.08)}
+
+  /* Hero */
+  .hero{ margin-top:18px; display:grid; grid-template-columns: 1fr 360px; gap:22px; align-items:stretch; }
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.45));
+    border-radius:12px;padding:22px; box-shadow: 0 10px 30px rgba(10,10,10,0.06); position:relative; overflow:hidden;
+  }
+  .badge{ display:inline-block;padding:6px 10px;background:var(--tape);color:#2b1b12;border-radius:6px;font-weight:700;margin-bottom:12px;font-size:13px; box-shadow: 0 6px 10px rgba(0,0,0,0.08); }
+
+  .hero h2{font-family:"Gloock", serif;font-size:36px;margin:6px 0 6px}
+  .hero p.lead{color:var(--muted);margin:6px 0 14px}
+
+  .paper-edge{ position:absolute; right:-80px; top:-60px; transform:rotate(-18deg); opacity:.12; width:380px; height:380px; background:radial-gradient(circle at 30% 30%, rgba(0,0,0,0.06), transparent 20%, transparent 100%); border-radius:50%; }
+
+  /* Diary entries layout (desktop-friendly) */
+  .diary{ margin-top:26px; display:grid; gap:18px; }
+
+  .entry{
+    display:grid;
+    grid-template-columns: var(--photo-col) 1fr; /* wider left column for photos on laptop */
+    gap:20px; align-items:start;
+    background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(250,245,236,0.6));
+    padding:18px;border-radius:12px; box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    position:relative;
+  }
+
+  .left{ position:relative; }
+  .photo{
+    width:100%; height:260px; border-radius:8px; overflow:hidden; background:#ddd; display:block;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12); border:4px solid rgba(255,255,255,0.6);
+    transform: translateX(-18px) rotate(-1deg); /* moved slightly more left */
+    transition: transform .45s cubic-bezier(.2,.9,.26,1);
+    margin:0;
+  }
+
+  .photo img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;       /* <-- ensures image fills box and is cropped */
+    object-position:center; /* adjust to change focal point */
+    border-radius:inherit;
+  }
+
+  .photo:hover{
+    transform: translateX(-18px) rotate(2deg) scale(1.02); /* keep same left offset on hover */
+  }
+
+  .tape{ position:absolute; left:18px; top:-12px; width:86px; height:22px; background:linear-gradient(90deg, rgba(255,255,255,0.85), rgba(230,200,160,0.95)); transform:rotate(-6deg); border-radius:3px; box-shadow: 0 6px 12px rgba(0,0,0,0.12); mix-blend-mode:multiply; }
+
+  .meta{ font-size:13px; color:var(--muted); margin-bottom:10px; }
+  .meta b{ color:var(--ink); font-weight:700 }
+
+  .desc{ background:rgba(255,255,255,0.94); padding:12px; border-radius:8px; font-size:15px; box-shadow: inset 0 -8px 20px rgba(0,0,0,0.02); }
+
+  .keywords{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+  .kw{ font-size:12px; padding:6px 10px; border-radius:999px; border:1px dashed rgba(0,0,0,0.06); background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3)); color:var(--accent); font-weight:700; }
+
+  /* remove footer: nothing defined */
+
+  /* Responsive: mobile stacks */
+  @media (max-width:900px){
+    .hero{ grid-template-columns:1fr; }
+    .entry{ grid-template-columns: 1fr; }
+    .photo{ height:320px; }
+    .wrap{ padding:18px; margin:10px; }
+  }
+
+  /* animations */
+  .fade-in{ opacity:0; transform: translateY(8px); transition: all .7s cubic-bezier(.2,.9,.2,1) }
+  .visible{ opacity:1; transform: translateY(0) }
+
+  /* small accessibility focus */
+  .nav-btn:focus, .kw:focus { box-shadow:0 0 0 4px rgba(123,43,43,0.12); border-color:var(--accent) }
+
+  /* small stain decorative element */
+  .stain{ position:absolute; right:38px; bottom:18px; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle at 30% 30%, rgba(160,120,90,0.08), transparent 40%), conic-gradient(rgba(120,80,40,0.04), rgba(200,160,100,0.02)); transform:rotate(-12deg); opacity:0.6; pointer-events:none; }
+
+  </style>
+</head>
+<body>
+  <main class="wrap" id="mainWrap">
+    <header>
+      <div class="logo">
+        <div class="book">LOG</div>
+        <div class="title">
+          <h1>Dagboek van een Soldaat</h1>
+          <p>Aanrakingen van kunst tijdens oorlog — Kunstlogboek (Thema: Oorlog)</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-btn" id="topBtn">Home</button>
+        <button class="nav-btn" id="downloadBtn">Download PDF (via print)</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="panel fade-in" id="heroLeft">
+        <span class="badge">Gevonden notitie in de zak van een oude jas</span>
+        <h2>“Ik schrijf dit om mens te blijven.”</h2>
+        <p class="lead">In deze verschrikkelijke tijd was er voor mij één redder, kunst. Dit dagboek verzamelt tien werken die een soldaat op een diepere manier liet nadenken in een tijd van een objectief conflict zonder winnaar. Elke pagina toont zijn bedenkingen over kunst, dit was het enige wat hem normaal hield in deze tijd.</p>
+
+        <div style="margin-top:10px; color:var(--muted); font-family:'Patrick Hand'; font-size:15px;">
+          <p><strong>Persoonlijk fragment</strong></p>
+          <p style="margin:6px 0 0;">Een Spaanse soldaat gaf me de foto en mijn handen trilden toen ik de pijn van de mensen in de kunst zag. Die pijn had ik met mijn eigen ogen moeten aanzien hier…</p>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;"><em>notitie gevonden in de zak van een oude jas</em></div>
+        </div>
+
+        <div class="paper-edge" aria-hidden="true"></div>
+      </div>
+
+      <aside class="panel fade-in" id="heroRight" aria-hidden="false">
+        <div style="position:relative; font-size:14px;">
+          <div style="font-family:'Patrick Hand'; color:#4a2f2f; font-weight:700; margin-bottom:8px;">Hoe dit project werkt</div>
+          <p style="margin:0;color:var(--muted)">Elke pagina bevat: titel, kunstenaar, jaar, stroming, discipline, een korte reflectie van de soldaat en drie kernwoorden. De tekst in cursief is de reflectie van "de soldaat".</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="diary" id="diary">
+
+      <!-- 1 -->
+      <article class="entry fade-in" id="entry-1" tabindex="0" aria-label="Werk 1 Oudheid">
+        <div class="left">
+          <div class="tape" aria-hidden="true"></div>
+          <figure class="photo" role="img" aria-label="Battle of Kadesh photo">
+            <img src="images/Battle-of-Kadesh.jpg" alt="Reliëf: De Slag bij Kadesh (ca. 1274 v.Chr.)">
+          </figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> De Slag bij Kadesh — <b>Kunstenaar:</b> Anonieme Egyptische hofkunstenaars — <b>Jaar:</b> ca. 1274 v.Chr. — <b>Stroming:</b> Oudheid — <b>Discipline:</b> Reliëf / Beeldhouwkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Dit grote oude reliëf dat militaire macht en duel toont laat zien dat oorlog tijdloos is. Het toont heel letterlijk hoe een soldaat ten strijde gaat en hoe andere manschappen achter zich volgen. <em>Iets waar ik aan kan relateren door de gruwen dat ik al heb gezien en weet hoe manschappen blindeloos in gevecht stormen, zonder te beseffen dat ze hier zelf niets uithalen.</em></p>
+            <div class="keywords" aria-hidden="false">
+              <span class="kw">tijdloos</span>
+              <span class="kw">heldhaftig</span>
+              <span class="kw">kracht</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="entry fade-in" id="entry-2" tabindex="0" aria-label="Werk 2 Klassiek">
+        <div class="left">
+          <figure class="photo">
+            <img src="images/Guernica.jpg" alt="Picasso - Guernica (1937)">
+          </figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Guernica — <b>Kunstenaar:</b> Pablo Picasso — <b>Jaar:</b> 1937 — <b>Stroming:</b> Klassieke periode / Modernisme — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Guernica is een van de meest iconische kunstwerken als het gaat over oorlog en de pijn en vernieling die oorlog achterlaat. Het toont een stad midden in de burgeroorlog, je ziet de pijn op de gezichten en de emoties worden heel hard uitgedrukt door de scherpe figuren. Het schilderij wordt overgenomen door het verdriet van de personages die erop afgebeeld staan. <em>Als ik naar dit kunstwerk kijk krijg ik rillingen door de gezichten van de mensen erop.</em></p>
+            <div class="keywords"><span class="kw">gruwel</span><span class="kw">pijn</span><span class="kw">inzicht</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="entry fade-in" id="entry-3" tabindex="0" aria-label="Werk 3 Impressionisme">
+        <div class="left">
+          <figure class="photo"><img src="images/De executie van keizer Maximiliaan.jpg" alt="De executie van keizer Maximiliaan - Édouard Manet"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> De executie van keizer Maximiliaan — <b>Kunstenaar:</b> Édouard Manet — <b>Jaar:</b> 1867–1869 — <b>Stroming:</b> Impressionisme — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>De kunstenaar toont hoe rangen in oorlog meer betekenen dan de mensen zelf, hoe hoger je staat hoe beter je bent. Er is een executie die toont hoe macht en geweld gebruikt wordt in tijden van oorlog. Het toont dat oorlog niet altijd twee fronten zijn die tegen elkaar vechten, maar dat vaak de belangrijkste daden stil en strategisch uitgevoerd worden. <em>Iets dat ik zeker al had meegemaakt in mijn tijd van oorlog.</em></p>
+            <div class="keywords"><span class="kw">koud</span><span class="kw">opoffering</span><span class="kw">macht</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="entry fade-in" id="entry-4" tabindex="0" aria-label="Werk 4 Kubisme">
+        <div class="left">
+          <figure class="photo"><img src="images/La Partie de Cartes.jpg" alt="La Partie de Cartes - Fernand Léger (1917)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> La Partie de Cartes — <b>Kunstenaar:</b> Fernand Léger — <b>Jaar:</b> 1917 — <b>Stroming:</b> Kubisme — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>De kunstenaar toont ons oorlogsvoering op een andere manier. Met geometrische onderdelen toont hij de ‘troepen’ als deel van een machine. Misschien toont hij ook een oorlog in zijn hoofd door op zo’n abstracte manier kunst te maken. <em>Oorlog zorgt soms dat we allemaal een eigen oorlog in ons hoofd hebben.</em></p>
+            <div class="keywords"><span class="kw">mechanisch</span><span class="kw">nadenken</span><span class="kw">diep</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="entry fade-in" id="entry-5" tabindex="0" aria-label="Werk 5 Surrealisme">
+        <div class="left">
+          <figure class="photo"><img src="images/Het Gezicht van de Oorlog.jpg" alt="Het Gezicht van de Oorlog - Salvador Dalí (1940)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Het Gezicht van de Oorlog — <b>Kunstenaar:</b> Salvador Dalí — <b>Jaar:</b> 1940 — <b>Stroming:</b> Surrealisme — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Dit beeld toont angst, dood, het slechte — hoe je het ook wil interpreteren. Allemaal dingen direct gelinkt aan oorlog. Het toont dood op een artistieke manier, een mysterie zoals Dalí zijn werken. <em>Het leek alsof ik keek in de ogen van de dood zelf toen ik hiernaar keek, hopelijk zal ik hem niet snel ontmoeten.</em></p>
+            <div class="keywords"><span class="kw">dood</span><span class="kw">nachtmerrie</span><span class="kw">herhaling</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="entry fade-in" id="entry-6" tabindex="0" aria-label="Werk 6 Abstract Expressionisme">
+        <div class="left">
+          <figure class="photo"><img src="images/Elegy to the Spanish Republic No. 110.jpg" alt="Elegy to the Spanish Republic No. 110 - Robert Motherwell (1971)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Elegy to the Spanish Republic No. 110 — <b>Kunstenaar:</b> Robert Motherwell — <b>Jaar:</b> 1971 — <b>Stroming:</b> Abstract Expressionisme — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>De zwarte vormen zijn rouwtekens, een manier om verlies te tonen. Iets wat in oorlog telkens weer gebeurt. Het heeft donkere, sobere kleuren die overeenkomen met het algemene gevoel van oorlog. <em>Zelf heb ik al veel moeten rouwen doorheen deze periode. Kan dit maar allemaal gewoon over zijn.</em></p>
+            <div class="keywords"><span class="kw">rouw</span><span class="kw">stilte</span><span class="kw">verlies</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="entry fade-in" id="entry-7" tabindex="0" aria-label="Werk 7 Pop-art">
+        <div class="left">
+          <figure class="photo"><img src="images/Whaam.jpg" alt="Whaam! - Roy Lichtenstein (1963)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Whaam! — <b>Kunstenaar:</b> Roy Lichtenstein — <b>Jaar:</b> 1963 — <b>Stroming:</b> Pop-art — <b>Discipline:</b> Schilderkunst</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Met deze strip-achtige afbeelding tonen ze een gevechtsvliegtuig dat een ander neerhaalt. Het toont hoe oorlog niet alleen op de grond gevochten wordt, en hoe de manier van oorlog evolueert. <em>Als ik het geluid van een bommenwerper hoor in de verte, vrezen we allemaal het ergste.</em></p>
+            <div class="keywords"><span class="kw">overdreven</span><span class="kw">cartoon</span><span class="kw">tekst</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8 -->
+      <article class="entry fade-in" id="entry-8" tabindex="0" aria-label="Werk 8 Hyperrealisme">
+        <div class="left">
+          <figure class="photo"><img src="images/Dead Troops Talk.jpeg" alt="Dead Troops Talk - Jeff Wall (1992)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Dead Troops Talk — <b>Kunstenaar:</b> Jeff Wall — <b>Jaar:</b> 1992 — <b>Stroming:</b> Hyperrealisme — <b>Discipline:</b> Geënsceneerde fotografie</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Het toont de oorlog zo eerlijk mogelijk: het afzien van de soldaten die tussen de doden liggen. De verschrikkelijke dingen waar een soldaat doorheen moet in tijden van oorlog. <em>Zelf heb ik al in de loopgraven gelegen met doden naast mij, de beelden geven me nachtmerries.</em></p>
+            <div class="keywords"><span class="kw">realisatie</span><span class="kw">situatie</span><span class="kw">omstandigheden</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9 -->
+      <article class="entry fade-in" id="entry-9" tabindex="0" aria-label="Werk 9 Conceptueel">
+        <div class="left">
+          <figure class="photo"><img src="images/Broken Obelisk Barnett Newman.jpeg" alt="Broken Obelisk - Barnett Newman (1963)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Broken Obelisk — <b>Kunstenaar:</b> Barnett Newman — <b>Jaar:</b> 1963 — <b>Stroming:</b> Conceptuele kunst — <b>Discipline:</b> Sculptuur</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Het toont een gebroken omgekeerde obelisk die balanceert op een piramide. Dit symboliseert hoge verwachtingen die nooit vervuld worden. Zoals in oorlog, waar soldaten dachten dat alles anders zou zijn voor ze ten strijde gingen — of hoe politici een verhaal verkopen dat nooit volledig klopt. <em>Zelf had ik nooit gedacht dat dit de werkelijkheid van oorlog zou zijn, zoveel spijt dat ik meedraag.</em></p>
+            <div class="keywords"><span class="kw">monument</span><span class="kw">kapot</span><span class="kw">omgekeerd</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10 -->
+      <article class="entry fade-in" id="entry-10" tabindex="0" aria-label="Werk 10 Hedendaags">
+        <div class="left">
+          <figure class="photo"><img src="images/Unheimlich.jpg" alt="Unheimlich - Pavel Otdelnov (2015)"></figure>
+        </div>
+        <div>
+          <div class="meta"><b>Titel:</b> Unheimlich — <b>Kunstenaar:</b> Pavel Otdelnov — <b>Jaar:</b> 2015 — <b>Stroming:</b> Hedendaagse kunst — <b>Discipline:</b> Installatie / mixed media</div>
+          <div class="desc">
+            <p><strong>Waarom past dit in het thema ‘Oorlog’?</strong></p>
+            <p>Deze hedendaagse kunst lijkt eerst niets met oorlog te maken te hebben. Maar als je goed kijkt zie je dat er onderdelen verstopt zijn. Het toont dat je niet altijd ziet aankomen wanneer er oorlog of conflict komt. <em>Niemand in ons land zag deze oorlog aankomen, het leek allemaal zo dom en klein.</em></p>
+            <div class="keywords"><span class="kw">onrust</span><span class="kw">verborgen</span><span class="kw">onverwacht</span></div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <div class="stain" aria-hidden="true"></div>
+  </main>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    // Fade-in entries when in viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, {threshold: 0.12});
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // nav top
+    document.getElementById('topBtn').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+    // download via print
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if(confirm("Wil je een PDF van deze pagina maken? (Gebruik 'Opslaan als PDF' in het print-scherm)")) {
+        window.print();
+      }
+    });
+
+    // keyboard quick-jump
+    window.addEventListener('keydown', (e) => {
+      if(document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+      if(e.key >= '1' && e.key <= '9') {
+        const id = 'entry-' + (e.key);
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+      if(e.key === '0') { const el = document.getElementById('entry-10'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); }
+    });
+  });
+  </script>
+</body>
+</html>
